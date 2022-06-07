@@ -1,0 +1,137 @@
+class Estado:
+    def __init__(self, nome, sigla):
+        self.__nome_estado = nome
+        self.__sigla_estado = sigla
+        self.__cidades_estado = []
+
+    def get_nome_estado(self):
+        return self.__nome_estado
+
+    def get_sigla_estado(self):
+        return self.__sigla_estado
+
+    def get_cidade_estado(self):
+        return self.__cidades_estado
+
+    def add_cidade_estado(self, city):
+        return self.__cidades_estado.append(city)
+
+class Cidade:
+    def __init__(self, nome):
+        self.__nome_city = nome
+        self.__qt_casos_cidade = 0
+
+    def get_nome_city(self):
+        return self.__nome_city
+
+    def atualizar_casos(self, novos_casos):
+        self.__qt_casos_cidade += novos_casos
+
+    def get_casos(self):
+        return self.__qt_casos_cidade
+
+def verificacao_estado(variavel, conteudo):
+    for var in conteudo:
+        if var.get_nome_estado() == variavel:  # verificação geral (principalmente objetos)
+            return True
+        elif var.get_sigla_estado() == variavel:  # verificação geral (principalmente objetos)
+            return True
+
+def verificacao_cidade(variavel, conteudo):
+    for var in conteudo:
+        if var.get_nome_city() == variavel:
+            return True
+
+
+lst_estados = []
+lst_cidades = []
+
+menu = """
+>>>>>SISTEMA DE CONTROLE COVID-19<<<<<
+Menu
+0- Finalizar o Programa
+1- Cadastrar Estados
+2- Cadastrar Cidades
+3- Relacionar Estado com Cidade
+4- Relatório de Estados
+5- Relatório de Cidades
+6- Atualizar números de casos Escolha:
+"""
+
+while True:
+    print(menu)
+    resposta = input('Digite uma opção do MENU: ')
+    if resposta == '0':
+        print('>>>PROGRMA FINALIZADO, VOLTE SEMPRE!<<<')
+        break
+
+    elif resposta == '1':
+        print('Cadastrar Estados')
+        while True:
+            nome_estado = input('Nome do estado: ').upper()
+            if verificacao_estado(nome_estado, lst_estados):
+                print('>>>ATENÇÃO<<< Estado já cadastrada, digite outro.')
+            else:
+                while True:
+                    sigla_estado = input('Sigla do estado: ').upper()  # falta ver a quantidade de caracteres maximo 3
+                    if verificacao_estado(sigla_estado, lst_estados):
+                        print('>>>ATENÇÃO<<< Sigla já cadastrada, digite outro.')
+                    else:
+                        estado = Estado(nome_estado, sigla_estado)
+                        lst_estados.append(estado)
+                        print(f'Estado {nome_estado} - {sigla_estado} cadastrada com sucesso!')
+                        break
+                break
+
+    elif resposta == '2':
+        print('Cadastrar Cidade')
+        while True:
+            nome_city = input('Digite uma cidade: ').upper()
+            if verificacao_cidade(nome_city, lst_cidades):
+                print('>>>ATENÇÃO<<< Cidade já cadastrada, digite outro.')
+            else:
+                cidade = Cidade(nome_city)
+                lst_cidades.append(cidade)
+                print(f'Cidade {nome_city} cadastrada com sucesso!')
+                break
+
+    elif resposta == '3':
+        print('Relacionar Estado com Cidade')
+        for estado in lst_estados:
+            print(estado.get_nome_estado())
+        for cidade in lst_cidades:
+            print(cidade.get_nome_city())
+        cidade_relacionar = input("Qual cidade você quer relacionar? ").upper()
+        estado_relacionar = input("Qual estado você quer relacionar? ").upper()
+        for estado in lst_estados:
+            if estado_relacionar == estado.get_nome_estado():
+                for cidade in lst_cidades:
+                    if cidade_relacionar == cidade.get_nome_city():
+                        estado.add_cidade_estado(cidade)
+
+    elif resposta == '4':
+        print('Relatório de Estados')
+        totalCasos = 0
+        for estado in lst_estados:
+            for relacao_cidade in estado.get_cidade_estado():
+                totalCasos += relacao_cidade.get_casos()
+            print(f'{estado.get_nome_estado()} atualmente tem {totalCasos} casos')
+
+    elif resposta == '5':
+        print('Relatório de Cidades')
+        for cidade in lst_cidades:
+            print(f'{cidade.get_nome_city()} atualmente tem {cidade.get_casos()} casos')
+
+    elif resposta == '6':
+        print('Atualizar números de casos Escolha')
+        for cidade in lst_cidades:
+            print(cidade.get_nome_city())
+        casos_cidade = input('Qual cidade vc quer atulaizar?  ').upper()
+        for cidade in lst_cidades:
+            if cidade.get_nome_city() == casos_cidade:
+                quant_casos = int(input('Qual o número de casos: '))
+                cidade.atualizar_casos(quant_casos)
+
+    else:
+        print('ERRO: Digite uma opção válida!')
+
